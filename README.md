@@ -110,3 +110,29 @@ for that version of python. ``pip install i3ipc`` should work.
 If ``python --version`` yields a python 2 version number, then you can modify
 the scripts in this repository (located at ``./src/py/``) to refer to
 ``python3`` instead of of ``python`` in their shebangs.
+
+## Usage
+
+After installation, the command ``nobar`` should be available in your path.
+The following are available subcommands:
+
+- add
+Usage: ``nobar add [widget]``
+Makes a certain widget visible on your screen. Currently available widgets are
+``time``, ``playerctl``, and ``system-stats``.
+- remove
+Usage: ``nobar remove [widget]``
+Removes a widget from the screen. See above for available widgets.
+- isolate
+Usage: ``nobar isolate``
+Takes the currently focused window and moves it to the next available empty
+workspace.
+- window-switcher
+Usage: ``nobar window-switcher``
+Opens a rofi menu from which other open windows (so not the focused window) can
+be chosen.
+- bring-to
+Usage: ``nobar bring-to``
+Opens a similar menu to ``window-switcher``. However, when one of these windows
+is selected, it will bring the currently focused window to the same workspace as
+the selected window.
