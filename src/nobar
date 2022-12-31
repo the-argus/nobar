@@ -1,0 +1,89 @@
+#!/bin/sh
+
+
+EWW_SUCCESS=""
+
+# cache how many widgets were visible as of the last call
+CACHE_LOCATION=$HOME/.cache/nobar
+WIDGETS_VISIBLE=0
+WIDGETS_VISIBLE_FILE=$CACHE_LOCATION/widgets-visible
+if [ -f $WIDGETS_VISIBLE_FILE ]; then
+    WIDGETS_VISIBLE=$(cat $WIDGETS_VISIBLE_FILE)
+fi
+# make log
+NOBAR_EWW_LOG_LOCATION=$CACHE_LOCATION/eww.log
+MAX_LOG_LENGTH=200
+mkdir -p $(dirname $NOBAR_EWW_LOG_LOCATION)
+
+# cleanup log if necessary
+LOG_LINES=$(wc -l $NOBAR_EWW_LOG_LOCATION | cut --delimiter " " --fields 1)
+if [ $LOG_LINES -gt $MAX_LOG_LENGTH ]; then
+    sed -i 1,50d $NOBAR_EWW_LOG_LOCATION
+fi
+
+# log the arguments for this call
+echo "$@" >> $NOBAR_EWW_LOG_LOCATION
+
+function error_if_eww_error () {
+    if [ -z $EWW_SUCCESS ]; then
+        echo "$1"
+        exit 1
+    fi
+}
+
+function update_window_state () {
+    # TODO: add checks to see if the window is already opened or closed
+    if [ $WIDGETS_VISIBLE -gt 0 ]; then
+        eww open nobar && EWW_SUCCESS="yes"
+    elif [ $WIDGETS_VISIBLE -eq 0 ]; then
+        eww close nobar && EWW_SUCCESS="yes"
+    fi
+}
+
+function add () {
+    # expects one argument: the widget name to add
+    widget_visible=$(eww get "$1-visible")
+    if [ "$widget_visible" = "false" ]; then
+        eww update "$1-visible"=true && EWW_SUCCESS="yes"
+        if [ ! -z $EWW_SUCCESS ]; then
+            WIDGETS_VISIBLE=$(($WIDGETS_VISIBLE+1))
+        fi
+    fi
+}
+
+function remove () {
+    # expects one argument: the widget name to remove
+    widget_visible=$(eww get "$1-visible")
+    if [ "$widget_visible" = "true" ]; then
+        eww update "$1-visible"=false && EWW_SUCCESS="yes"
+        if [ ! -z $EWW_SUCCESS ]; then
+            WIDGETS_VISIBLE=$(($WIDGETS_VISIBLE-1))
+        fi
+    fi
+}
+
+# main functionality
+if [ $# -gt 1 ]; then
+    # assume we're adding or removing widgets
+    if [ "$1" = "add" ]; then
+        add $2
+    elif [ "$1" = "remove" ]; then
+        remove $2
+    else
+        echo "operation $1 unknown. available operations are \"add\" and \"remove\"."
+        exit 1
+    fi
+    # make sure eww succeeded
+    error_if_eww_error "eww failed. daemon may not be started."
+    # update how many widgets are visible
+    echo $WIDGETS_VISIBLE > $WIDGETS_VISIBLE_FILE
+
+    # add or remove succceeded if we reach this point
+    EWW_SUCCESS="" # reset so update_window_state can use it
+    update_window_state
+    error_if_eww_error "eww failed. your configuration may be invalid. see eww logs for further information."
+else
+    # start the eww daemon so we're prepared for future calls
+    eww daemon >> $NOBAR_EWW_LOG_LOCATION && EWW_SUCCESS="yes"
+    error_if_eww_error "failed to start eww daemon"
+fi

@@ -1,0 +1,31 @@
+.monospace {
+    font-family: "monospace";
+}
+
+.icon * {
+    font-size: 40px;
+}
+
+window {
+    // background-color: rgba(0.0, 0.0, 0.0, 0.0);
+    background-color: rgba(0.0, 0.0, 0.0, 0.0);
+}
+
+.primary-widget {
+    margin: 10px;
+    border-radius: 8px;
+    background-color: #555169;
+}
+
+window * {
+    font-size: 20px;
+}
+
+.date * {
+    font-size: 40px;
+}
+.time * {
+    font-size: 80px;
+}
+// .date *, .time * {
+// }

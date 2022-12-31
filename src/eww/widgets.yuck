@@ -1,0 +1,86 @@
+; time widget
+(defvar time-visible false)
+(defpoll time :interval "5s"
+              :initial "00:00"  ; optional, defaults to poll at startup
+              :run-while time-visible   ; optional, defaults to 'true'
+  `date "+%I:%M %p"`)
+(defpoll date :interval "1800s"
+              :initial "UNKNOWN DATE"  ; optional, defaults to poll at startup
+              :run-while time-visible   ; optional, defaults to 'true'
+  `date "+%B %d %Y"`)
+(defwidget clock []
+  (box
+    :class "primary-widget"
+    :visible time-visible
+    :orientation "vertical"
+    (box
+      :class "time"
+      `${time}`)
+    (box
+      :class "date"
+      `${date}`)))
+
+; album cover art image
+(deflisten album-art-location :initial "/tmp/albumart2.jpeg"
+  `~/.local/bin/monitor-album-art.sh`)
+(defwidget albumcover []
+  (image :path album-art-location
+    :image-width 256
+    :image-height 256))
+
+; music controls text
+(deflisten fast-backwards-icon :initial "<<"
+  `echo -e "\\u23EE"`)
+(deflisten play-icon :initial "PLAY"
+  `echo -e "\\u23F5"`)
+(deflisten pause-icon :initial "PAUSE"
+  `echo -e "\\u23F8"`)
+(deflisten fast-forwards-icon :initial ">>"
+  `echo -e "\\u23ED"`)
+(defwidget music-controls []
+  (centerbox
+    :class "monospace icon"
+    :orientation "horizontal"
+    (box
+      :orientation "vertical"
+      `${fast-backwards-icon}`
+      "J")
+    (box
+      :orientation "vertical"
+      `${play-icon}`
+      "K")
+    (box
+      :orientation "vertical"
+      `${fast-forwards-icon}`
+      "L")))
+
+; music box
+(defvar playerctl-visible false)
+(defwidget playerctl []
+  (box
+    :orientation "vertical"
+    :class "primary-widget playerctl"
+    :visible playerctl-visible
+    (albumcover)
+    (music-controls)))
+
+; system stats widget
+(defvar system-stats-visible false)
+(defpoll gb-mem :interval "1s"
+  :initial "0mb"
+  :run-while system-stats-visible
+  `~/.local/bin/mem-gb`)
+(defpoll batt :interval "10s"
+  :initial "0%"
+  :run-while system-stats-visible
+  `cat /sys/class/power_supply/BAT0/capacity`)
+(defwidget system-stats []
+  (box
+    :class "primary-widget system-stats"
+    :orientation "vertical"
+    :visible system-stats-visible
+    (box
+      :class "RAM"
+      `MEM: ${gb-mem}`)
+    `BATTERY: ${batt}%`
+    `CPU: ${EWW_CPU["avg"]} Hz`))

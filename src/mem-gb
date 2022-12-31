@@ -1,0 +1,10 @@
+#!/bin/sh
+
+mem_total_without_unit=$(</proc/meminfo grep MemTotal | grep -Eo '[0-9]+')
+mem_free_without_unit=$(</proc/meminfo grep MemAvailable | grep -Eo '[0-9]+')
+mem_used_without_unit=$((mem_total_without_unit - mem_free_without_unit))
+
+mem_total_gb=$(echo "${mem_total_without_unit}K" | numfmt --to=iec --from=iec --format="%.1f")
+mem_used_gb=$(echo "${mem_used_without_unit}K" | numfmt --to=iec --from=iec --format="%.1f")
+
+echo "$mem_used_gb / $mem_total_gb"

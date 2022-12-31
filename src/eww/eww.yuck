@@ -1,0 +1,30 @@
+; CONSTANTS
+; these dont work ;(
+
+; (defvar WINDOW_ANCHOR "top left")
+; (defvar TARGET_MONITOR 0)
+; (defvar STACKING "fg")
+; (defvar WINDOW_TYPE "normal")
+; (defvar WM_IGNORE true)
+
+; IMPORTS ----------------------------------------------------------------------
+
+(include "./widgets.yuck")
+
+; WINDOW -----------------------------------------------------------------------
+
+(defwindow nobar
+  :monitor 0
+  :geometry (geometry :x "20%" 
+    :y "20%"
+    :width "60%"
+    :height "60%"
+    :anchor "top left")
+  :stacking "fg"
+  :wm-ignore true
+  :windowtype "normal"
+  ; :stacking STACKING
+  ; :wm-ignore WM_IGNORE
+  ; :windowtype WINDOW_TYPE
+  (box
+    (system-stats) (clock) (playerctl)))
