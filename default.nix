@@ -73,10 +73,6 @@ in
       mkdir -p $out/bin
 
       mv nobar $out/bin/
-      mv eww $out/share/nobar/
-      mv sh $out/share/nobar/
-
-      ln -sf ${scripts}/bin $out/runtime-deps
     '';
 
     postFixup = ''
