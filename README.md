@@ -82,10 +82,18 @@ home-manager switch --flake .
 ### Non-nix
 
 If you're not using nix, run the following:
+(please use nix... this approach makes me want to die)
 
 ```bash
 git clone git@github.com:the-argus/nobar
 sudo ln -sf ./nobar/src/nobar /bin/nobar
+sudo ln -sf ./nobar/src/sh/mem-gb /bin/nobar
+sudo ln -sf ./nobar/src/sh/monitor-album-art /bin/nobar
+sudo ln -sf ./nobar/src/py/bring-to /bin/nobar
+sudo ln -sf ./nobar/src/py/isolate /bin/nobar
+sudo ln -sf ./nobar/src/py/window-switcher /bin/nobar
+sudo mkdir -p /lib/python3.10/site-packages
+sudo ln -sf ./nobar/src/py/nobar /lib/python3.10/site-packages/
 ```
 
 Then, you need to make sure you have the following dependencies installed:
