@@ -1,0 +1,1 @@
+# nobar home-manager module
