@@ -19,5 +19,7 @@
       nobar = pkgs.${system}.callPackage ./. {};
       default = nobar;
     });
+
+    formatter = genSystems (system: pkgs.${system}.alejandra);
   };
 }
