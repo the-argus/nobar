@@ -63,7 +63,7 @@ function remove () {
 }
 
 # main functionality
-if [ $# -gt 1 ]; then
+if [ $# -ge 1 ]; then
     # assume we're adding or removing widgets
     if [ "$1" = "add" ]; then
         add $2
