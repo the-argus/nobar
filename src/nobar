@@ -69,6 +69,12 @@ if [ $# -gt 1 ]; then
         add $2
     elif [ "$1" = "remove" ]; then
         remove $2
+    elif [ "$1" = "isolate" ]; then
+        isolate
+    elif [ "$1" = "window-switcher" ]; then
+        window-switcher
+    elif [ "$1" = "bring-to" ]; then
+        bring-to
     else
         echo "operation $1 unknown. available operations are \"add\" and \"remove\"."
         exit 1
