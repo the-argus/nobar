@@ -26,7 +26,7 @@ path.
 This is definitely the best way to install nobar, but unforunately a lot of
 documentation is obtuse or somewhat out of date, so I don't have an resources
 to provide to anyone who does not already have a working home-manager install
-and a configuration flake.
+and a configuration flake. If you dont, see the [non-nix install guide](#non-nix)
 
 First, back up your window manager config. I3 will be used as the example in
 this guide.
