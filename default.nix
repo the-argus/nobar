@@ -20,9 +20,9 @@
     src = eww;
     nativeBuildInputs = [makeWrapper];
     installPhase = "cp -r $src $out";
-    postPatch = ''
+    preFixup = ''
       wrapProgram $out/bin/eww \
-          --add-flags "--config ${nobarEwwConfig}"
+          --add-flags "--config ${nobarEwwConfig}/share/nobar/eww"
     '';
   };
 
@@ -31,31 +31,29 @@
       i3ipc
     ]);
 
-  scripts = stdev.mkDerivation {
+  scripts = stdenv.mkDerivation {
     name = "nobar-runtime-scripts";
     src = ./src;
 
-    nativeBuildInputs = [
-      # by including python this should cause shebangs to point to this
-      # instance of python (hopefully)
-      python
-      makeWrapper
-    ];
+    nativeBuildInputs = [makeWrapper];
+
+    buildInputs = [python];
 
     installPhase = ''
       mkdir -p $out/bin
       mkdir -p $out/lib/python3.10/site-packages
 
-      my py/isolate $out/bin
-      my py/window-switcher $out/bin
-      mv py $out/lib/python3.10/site-packages/nobar
+      mv py/nobar $out/lib/python3.10/site-packages
+      mv py/* $out/bin
+      mv sh/* $out/bin
     '';
   };
 
-  runtime-path = lib.makeBinPath [
+  runtime-deps = [
     wrappedEww
     scripts
   ];
+  runtime-path = lib.makeBinPath runtime-deps;
 in
   stdenv.mkDerivation {
     pname = "nobar";
@@ -67,7 +65,7 @@ in
       [
         makeWrapper
       ]
-      ++ runtime-path;
+      ++ runtime-deps;
 
     installPhase = ''
       mkdir -p $out
@@ -78,9 +76,10 @@ in
       mv eww $out/share/nobar/
       mv sh $out/share/nobar/
 
+      ln -sf ${scripts}/bin $out/runtime-deps
     '';
 
-    postPatch = ''
+    postFixup = ''
       wrapProgram $out/bin/nobar \
           --prefix PATH : ${runtime-path}
     '';

@@ -1,4 +1,5 @@
-#!/bin/python
+#!/usr/bin/env python
+
 import i3ipc
 
 from nobar.window_management import collect_all_windows, rofi_choose_between

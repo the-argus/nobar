@@ -1,4 +1,5 @@
-#!/bin/python
+#!/usr/bin/env python
+
 import i3ipc as i3ipc
 import subprocess
 import sys
