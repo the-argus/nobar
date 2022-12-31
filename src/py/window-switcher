@@ -1,0 +1,30 @@
+#!/bin/python
+import i3ipc
+
+from nobar.window_management import collect_all_windows, rofi_choose_between
+
+if __name__ == "__main__":
+    # create variables and library objects
+    i3 = i3ipc.Connection()
+    tree = i3.get_tree()
+    visited_containers = set()
+    windows = {}
+
+    # make the windows dict contain all the windows
+    collect_all_windows(tree, windows, visited_containers)
+
+    # exclude the focused window
+    focused = tree.find_focused()
+    if focused.window_title.lower() in windows:
+        # dont bother offering to switch to the currently focused window
+        windows.pop(focused.window_title.lower())
+
+    # interactively choose between the available window titles
+    chosen_window = rofi_choose_between(windows.keys()).strip()
+    if chosen_window == "":
+        print("No rofi selection made, exiting quietly.")
+        exit(0)
+    window_id = windows[chosen_window]
+
+    # focus the chosen title
+    i3.command(f'[con_id="{window_id}"] focus')

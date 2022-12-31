@@ -1,4 +1,4 @@
-#!/nix/store/71cwxmn12nbh9nagm2fhbbm068k9d239-python3-3.10.8-env/bin/python
+#!/bin/python
 import i3ipc as i3ipc
 import subprocess
 import sys

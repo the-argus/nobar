@@ -1,0 +1,9 @@
+#!/bin/python
+import i3ipc
+from nobar.window_management import collect_all_windows, rofi_choose_between
+
+# bring the currently focused window to the chosen other window
+if __name__ == "__main__":
+    i3 = i3ipc.Connection()
+
+    tree = i3.get_tree()
