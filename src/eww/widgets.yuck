@@ -22,7 +22,7 @@
 
 ; album cover art image
 (deflisten album-art-location :initial "/tmp/albumart2.jpeg"
-  `~/.local/bin/monitor-album-art.sh`)
+  `monitor-album-art`)
 (defwidget albumcover []
   (image :path album-art-location
     :image-width 256
@@ -69,7 +69,7 @@
 (defpoll gb-mem :interval "1s"
   :initial "0mb"
   :run-while system-stats-visible
-  `~/.local/bin/mem-gb`)
+  `mem-gb`)
 (defpoll batt :interval "10s"
   :initial "0%"
   :run-while system-stats-visible
