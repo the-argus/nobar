@@ -1,10 +1,45 @@
 #!/usr/bin/env python
 
 import i3ipc
-from nobar.window_management import collect_all_windows, rofi_choose_between
+from nobar.window_management import (
+    collect_all_windows,
+    rofi_choose_between_dict_by_value,
+)
 
 # bring the currently focused window to the chosen other window
 if __name__ == "__main__":
     i3 = i3ipc.Connection()
 
     tree = i3.get_tree()
+
+    # get all windows (and store their workspace number in the output)
+    value_lambda = lambda x: {"title": x.window_title, "workspace": x.workspace().num}
+    visited_containers = set()
+    all_windows = {}
+    collect_all_windows(
+        tree,
+        all_windows,
+        visited_containers,
+        value=value_lambda,
+    )
+
+    # exclude the ones in the current workspace
+    focused = tree.find_focused()
+    focused_workspace = focused.workspace()
+    visited_containers = set()
+    windows_in_this_workspace = {}
+    collect_all_windows(
+        focused_workspace, windows_in_this_workspace, visited_containers
+    )
+    for id, window_title in windows_in_this_workspace.items():
+        all_windows.pop(id)
+
+    # open rofi to select the desination workspace
+    destination_window_id = rofi_choose_between_dict_by_value(
+        all_windows, string_conversion=lambda x: x["title"]
+    )
+
+    destination_workspace = all_windows[destination_window_id]
+
+    # focus the chosen title
+    i3.command(f"move container to workspace number {destination_workspace}")
