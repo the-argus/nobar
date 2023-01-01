@@ -1,3 +1,6 @@
 .direnv/
 
 result
+
+# pyright lsp doesnt work unless i have a venv
+.venv/
