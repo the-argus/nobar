@@ -1,4 +1,4 @@
-from window_management import (
+from .window_management import (
     collect_all_windows,
     rofi_choose_between,
     rofi_choose_between_dict_by_value,

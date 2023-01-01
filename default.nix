@@ -26,9 +26,19 @@
     '';
   };
 
+  nobar-python-lib = stdenv.mkDerivation {
+    name = "nobar-python-lib";
+    src = ./src/py/nobar;
+    installPhase = ''
+      mkdir -p $out/lib/python3.10/site-packages/
+      mv . $out/share/lib/python3.10/site-packages/nobar
+    '';
+  };
+
   python = python310.withPackages (pythonPackages:
     with pythonPackages; [
       i3ipc
+      nobar-python-lib
     ]);
 
   scripts = stdenv.mkDerivation {
@@ -41,9 +51,6 @@
 
     installPhase = ''
       mkdir -p $out/bin
-      mkdir -p $out/lib/python3.10/site-packages
-
-      mv py/nobar $out/lib/python3.10/site-packages
       mv py/* $out/bin
       mv sh/* $out/bin
     '';
