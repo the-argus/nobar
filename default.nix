@@ -64,6 +64,7 @@ in
     nativeBuildInputs =
       [
         makeWrapper
+        python
       ]
       ++ runtime-deps;
 
