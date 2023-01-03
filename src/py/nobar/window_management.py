@@ -1,16 +1,22 @@
 import i3ipc
 import subprocess
+from typing import Callable, Union
+
+default_key_lambda: Callable[[i3ipc.con.Con], int] = lambda con: con.id
+default_value_lambda: Callable[
+    [i3ipc.con.Con], Union[dict[str, Union[int, str]], str]
+] = lambda con: con.window_title
 
 # store all the windows as window_title: container_id pairs
 def collect_all_windows(
     tree_node: i3ipc.con.Con,
     collection: dict,
     visited_containers: set,
-    key=(lambda x: x.id),
-    value=(lambda x: x.window_title),
+    key_lambda=default_key_lambda,
+    value_lambda=default_value_lambda,
 ):
     if not tree_node.id in visited_containers and tree_node.window_title != None:
-        collection[key(tree_node)] = value(tree_node)
+        collection[key_lambda(tree_node)] = value_lambda(tree_node)
         visited_containers.add(tree_node.id)
 
     for child in tree_node.descendants():

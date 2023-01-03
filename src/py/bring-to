@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import i3ipc
+from typing import Callable
 from nobar.window_management import (
     collect_all_windows,
     rofi_choose_between_dict_by_value,
@@ -13,14 +14,18 @@ if __name__ == "__main__":
     tree = i3.get_tree()
 
     # get all windows (and store their workspace number in the output)
-    value_lambda = lambda x: {"title": x.window_title, "workspace": x.workspace().num}
+    value_lambda: Callable[[i3ipc.con.Con], dict] = lambda con: {
+        "title": con.window_title,
+        "workspace": con.workspace().num,
+    }
     visited_containers = set()
     all_windows = {}
     collect_all_windows(
         tree,
         all_windows,
         visited_containers,
-        value=value_lambda,
+        key_lambda=(lambda con: con.id),
+        value_lambda=value_lambda,
     )
 
     # exclude the ones in the current workspace
@@ -35,6 +40,8 @@ if __name__ == "__main__":
         all_windows.pop(id)
 
     # open rofi to select the desination workspace
+    for key, value in all_windows.items():
+        print(f"key: {key}\nvalue: {value}\n")
     destination_window_id = rofi_choose_between_dict_by_value(
         all_windows, string_conversion=lambda x: x["title"]
     )
