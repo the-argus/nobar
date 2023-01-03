@@ -19,7 +19,7 @@ if __name__ == "__main__":
         tree,
         windows,
         visited_containers,
-        value=lambda x: x.window_title.lower(),
+        value_lambda=lambda x: x.window_title.lower(),
     )
 
     # exclude the focused window
