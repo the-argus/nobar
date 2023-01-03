@@ -20,14 +20,18 @@ def collect_all_windows(
         visited_containers.add(tree_node.id)
 
     for child in tree_node.descendants():
-        collect_all_windows(child, collection, visited_containers)
+        collect_all_windows(
+            child, collection, visited_containers, key_lambda, value_lambda
+        )
 
 
 # function to open an interactive rofi chooser and then return its output
 def rofi_choose_between(options: list, exit_on_fail=True, string_conversion=None):
+    stdin="logic error in rofi_choose_between. you shouldn't be seeing this."
     if string_conversion is not None:
-        map(string_conversion, options)
-    stdin = "\n".join(options)
+        stdin = "\n".join(map(string_conversion, options))
+    else:
+        stdin = "\n".join(options)
     rofi = subprocess.Popen(
         ["rofi", "-dmenu", "-matching", "fuzzy"],
         stdin=subprocess.PIPE,
@@ -58,8 +62,8 @@ def rofi_choose_between_dict_by_value(options: dict, **rofi_kwargs):
             inverted_options[value] = key
 
     choice = rofi_choose_between(options.values(), **rofi_kwargs)
-
-    return inverted_options[choice]
+    
+    return inverted_options[choice.strip()]
 
 
 def rofi_choose_between_dict(options: dict, **rofi_kwargs):

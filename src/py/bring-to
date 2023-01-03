@@ -40,13 +40,12 @@ if __name__ == "__main__":
         all_windows.pop(id)
 
     # open rofi to select the desination workspace
-    for key, value in all_windows.items():
-        print(f"key: {key}\nvalue: {value}\n")
     destination_window_id = rofi_choose_between_dict_by_value(
         all_windows, string_conversion=lambda x: x["title"]
     )
 
-    destination_workspace = all_windows[destination_window_id]
+    destination_workspace = all_windows[destination_window_id]["workspace"]
 
     # focus the chosen title
     i3.command(f"move container to workspace number {destination_workspace}")
+    i3.command(f"workspace number {destination_workspace}")
