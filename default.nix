@@ -4,6 +4,8 @@
   makeWrapper,
   eww,
   python310,
+  xkb-switch,
+  playerctl,
   ...
 }: let
   nobarEwwConfig = stdenv.mkDerivation {
@@ -60,6 +62,8 @@
   runtime-deps = [
     wrappedEww
     scripts
+    xkb-switch
+    playerctl
   ];
   runtime-path = lib.makeBinPath runtime-deps;
 in
